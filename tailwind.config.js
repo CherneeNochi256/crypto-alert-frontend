@@ -19,10 +19,12 @@ module.exports = {
       colors: {
         'my-black': '#0f051d',
         'my-purple': '#130749',
-        'my-white': '#f3f2f4'
+        'my-white': '#f3f2f4',
       }
     },
   },
-  plugins: [],
+  plugins: [
+
+  ],
 }
 

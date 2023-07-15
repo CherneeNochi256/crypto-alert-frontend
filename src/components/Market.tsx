@@ -7,6 +7,9 @@ import {useQueries} from "react-query";
 import axios from "axios";
 import SearchBar from "./UI/SearchBar";
 import {allData, allError, allLoading} from "../utils/Market";
+import Loading from "./UI/Loading";
+import Error from "./UI/Error";
+import HeaderCoin from "./UI/HeaderCoin";
 
 function Market(props: any) {
 
@@ -98,7 +101,7 @@ function Market(props: any) {
 
 
   if (query !== '') {
-    if (searchedCoins.isLoading) return <> Loading...</>
+    if (searchedCoins.isLoading) return <> <Loading/></>
 
     else if (searchedCoins.error) return <>Oops... something went wrong </>
 
@@ -124,38 +127,93 @@ function Market(props: any) {
   }
 
 
-  if (allLoading(trendingCoinsData)) return <>is Loading...</>
-
-  else if (allError(trendingCoinsData)) return <>Oops... something went wrong </>
-
-  else if (allData(trendingCoinsData)) {
+  if (allLoading(trendingCoinsData)) {
     return (
-        <div>
-          <h1 className={"font-3xl"}>Market</h1>
+        <div id={"market"}>
+          <h1 className={"text-5xl font-bold my-5"}>Market</h1>
 
           <SearchBar
               query={query}
               setQuery={setQuery}
           ></SearchBar>
 
-          {
-            trendingCoinsData.map((coin) => {
-              return (
-                  <div
-                      className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                      key={coin.data.id}>
-                    <Link to={`/${coin.data.id}`}>
-                      <MarketCoin
-                          img={coin.data.image.large}
-                          name={coin.data.name}
-                          price={coin.data.market_data.current_price.usd}
-                          change={coin.data.market_data.price_change_percentage_24h}
-                      ></MarketCoin>
-                    </Link>
-                  </div>
-              )
-            })
-          }
+          <Loading></Loading>
+        </div>
+    );
+  } else if (allError(trendingCoinsData)) {
+    return (
+        <div id={"market"}>
+          <h1 className={"text-5xl font-bold my-5"}>Market</h1>
+
+          <SearchBar
+              query={query}
+              setQuery={setQuery}
+          ></SearchBar>
+
+          <Error/>
+        </div>
+    );
+
+  } else if (allData(trendingCoinsData)) {
+    return (
+        <div id={"market"}>
+          <h1 className={"text-5xl font-bold my-5"}>Market</h1>
+
+          <SearchBar
+              query={query}
+              setQuery={setQuery}
+          ></SearchBar>
+
+          <div className="relative hidden sm:block overflow-x-auto shadow-md sm:rounded-lg mt-24 font-bold text-2xl">
+            <div className="text-left ">
+              <div className="  bg-gradient-to-tr from-indigo-800 via-purple-800 to-pink-500 text-my-white grid grid-cols-4 grid-rows-1">
+                <div  className="px-6 py-3 my-auto">
+                  Coin
+                </div>
+                <div  className="px-6 py-3 my-auto" >
+                  Price
+                </div>
+                <div  className="px-6 py-3 my-auto">
+                 24h Change
+                </div>
+                <div  className="px-6 py-3 my-auto">
+                  Market Cap
+                </div>
+              </div>
+            </div>
+            {
+              trendingCoinsData.map((coin) => {
+                return (
+
+                    <MarketCoin
+                        key={coin.data.id}
+                        img={coin.data.image.large}
+                        name={coin.data.name}
+                        price={coin.data.market_data.current_price.usd}
+                        change={coin.data.market_data.price_change_percentage_24h}
+                    ></MarketCoin>
+                )
+              })
+            }
+          </div>
+
+          <div className={"sm:hidden flex flex-col mt-24 gap-12"}>
+            {
+              trendingCoinsData.map((coin) => {
+                return (
+
+                    <HeaderCoin
+                        key={coin.data.id}
+                        img={coin.data.image.large}
+                        name={coin.data.name}
+                        price={coin.data.market_data.current_price.usd}
+                        change={coin.data.market_data.price_change_percentage_24h}
+                    ></HeaderCoin>
+                )
+              })
+            }
+          </div>
+
         </div>
     );
   }

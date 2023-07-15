@@ -9,8 +9,8 @@ const Home = () => {
         <div className={"bg-gradient-to-t from-my-black from-30%  to-my-purple to-90%" +
             " text-my-white" +
             " text-xl"}>
+          <Navbar></Navbar>
           <div className={"container mx-auto"}>
-            <Navbar></Navbar>
             <Header></Header>
             <Market></Market>
           </div>
