@@ -1,19 +1,20 @@
 import React, {useState} from 'react';
-import {SearchedCoin} from "../features/coins/coinsSlice";
-import {Link} from "react-router-dom";
-import MarketCoin from "./UI/MarketCoin";
 import useDebounce from "../hooks/useDebounce";
-import {useQueries} from "react-query";
+import {useQueries, useQuery} from "react-query";
 import axios from "axios";
-import SearchBar from "./UI/SearchBar";
-import {allData, allError, allLoading} from "../utils/Market";
-import Loading from "./UI/Loading";
-import Error from "./UI/Error";
-import HeaderCoin from "./UI/HeaderCoin";
+import {concatSearchedIds, concatTrendingIds} from "../utils/Market";
+import Loading from "./UI/common/Loading";
+import Error from "./UI/common/Error";
+import MarketTable from "./UI/market/MarketTable";
+import MobileMarketTable from "./UI/market/MobileMarketTable";
+import MarketTemplate from "./UI/market/MarketTemplate";
+import MarketPagination from "./UI/market/MarketPagination";
 
 function Market(props: any) {
 
   const [query, setQuery] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [coinsPerPage, setCoinsPerPage] = useState(8)
 
   const debouncedSearchTerm = useDebounce(query, 500)
 
@@ -38,183 +39,104 @@ function Market(props: any) {
       ]
   )
 
-  const trendingCoinsData = useQueries(
-      [
-        {
-          queryKey: ['coin1', trendingCoins.data],
-          queryFn:
-              async () => {
-                return await axios.get(`https://api.coingecko.com/api/v3/coins/${trendingCoins.data.coins[0].item.id}?localization=false&tickers=false`).then(response => response.data)
-              },
-          enabled: !!trendingCoins.data
-        },
-        {
-          queryKey: ['coin2', trendingCoins.data],
-          queryFn:
-              async () => {
-                return await axios.get(`https://api.coingecko.com/api/v3/coins/${trendingCoins.data.coins[1].item.id}?localization=false&tickers=false`).then(response => response.data)
-              },
-          enabled: !!trendingCoins.data
-        },
-        {
-          queryKey: ['coin3', trendingCoins.data],
-          queryFn:
-              async () => {
-                return await axios.get(`https://api.coingecko.com/api/v3/coins/${trendingCoins.data.coins[2].item.id}?localization=false&tickers=false`).then(response => response.data)
-              },
-          enabled: !!trendingCoins.data
-        },
-        {
-          queryKey: ['coin4', trendingCoins.data],
-          queryFn:
-              async () => {
-                return await axios.get(`https://api.coingecko.com/api/v3/coins/${trendingCoins.data.coins[3].item.id}?localization=false&tickers=false`).then(response => response.data)
-              },
-          enabled: !!trendingCoins.data
-        },
-        {
-          queryKey: ['coin5', trendingCoins.data],
-          queryFn:
-              async () => {
-                return await axios.get(`https://api.coingecko.com/api/v3/coins/${trendingCoins.data.coins[4].item.id}?localization=false&tickers=false`).then(response => response.data)
-              },
-          enabled: !!trendingCoins.data
-        },
-        {
-          queryKey: ['coin6', trendingCoins.data],
-          queryFn:
-              async () => {
-                return await axios.get(`https://api.coingecko.com/api/v3/coins/${trendingCoins.data.coins[5].item.id}?localization=false&tickers=false`).then(response => response.data)
-              },
-          enabled: !!trendingCoins.data
-        },
-        {
-          queryKey: ['coin7', trendingCoins.data],
-          queryFn:
-              async () => {
-                return await axios.get(`https://api.coingecko.com/api/v3/coins/${trendingCoins.data.coins[6].item.id}?localization=false&tickers=false`).then(response => response.data)
-              },
-          enabled: !!trendingCoins.data
-        },
-      ]
+  const trendingCoinsData = useQuery(
+      {
+        queryKey: ['trendingCoinsData', trendingCoins.data],
+        queryFn:
+            async () => {
+              return await axios.get(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${concatTrendingIds(trendingCoins.data.coins)}&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en`).then(response => response.data)
+            },
+        enabled: !!trendingCoins.data
+      }
+  )
+
+  const searchedCoinsData = useQuery(
+      {
+        queryKey: ['searchedCoinsData', searchedCoins.data],
+        queryFn:
+            async () => {
+              return await axios.get(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${concatSearchedIds(searchedCoins.data.coins)}&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en`).then(response => response.data)
+            },
+        enabled: !!searchedCoins.data
+      }
   )
 
 
-  if (query !== '') {
-    if (searchedCoins.isLoading) return <> <Loading/></>
-
-    else if (searchedCoins.error) return <>Oops... something went wrong </>
-
-    else if (searchedCoins.data) {
+  if (query !== '' && searchedCoins.data) {
+    if (searchedCoinsData.isLoading) {
       return (
-          <>
-            <SearchBar
-                query={query}
-                setQuery={setQuery}
-            ></SearchBar>
-            {
-              searchedCoins.data.coins.map((coin: SearchedCoin) => {
-                return (
-                    <Link to={`/${coin.id}`}>
-                      {coin.name}
-                    </Link>
-                )
-              })
-            }
-          </>
-      )
+          <MarketTemplate
+              query={query}
+              setQuery={setQuery}
+          >
+            <Loading></Loading>
+          </MarketTemplate>
+      );
+
+    } else if (searchedCoinsData.error) {
+      return (
+          <MarketTemplate
+              query={query}
+              setQuery={setQuery}>
+            <Error/>
+          </MarketTemplate>
+      );
+
+    } else if (searchedCoinsData.data) {
+      const lastCoinIndex = currentPage * coinsPerPage
+      const firstCoinIndex = lastCoinIndex - coinsPerPage
+      const currentSearchedCoinsData = searchedCoinsData.data.slice(firstCoinIndex, lastCoinIndex)
+
+      return (
+          <MarketTemplate
+              query={query}
+              setQuery={setQuery}>
+            <MarketTable coinsData={currentSearchedCoinsData}/>
+            <MobileMarketTable coinsData={currentSearchedCoinsData}/>
+            <MarketPagination
+                id={'search'}
+                totalCoins={searchedCoinsData.data.length}
+                currentPage={currentPage}
+                coinsPerPage={coinsPerPage}
+                setCurrentPage={setCurrentPage}
+            />
+          </MarketTemplate>
+      );
+
     }
   }
 
 
-  if (allLoading(trendingCoinsData)) {
+  if (trendingCoinsData.isLoading) {
     return (
-        <div id={"market"}>
-          <h1 className={"text-5xl font-bold my-5"}>Market</h1>
-
-          <SearchBar
-              query={query}
-              setQuery={setQuery}
-          ></SearchBar>
-
+        <MarketTemplate query={query} setQuery={setQuery}>
           <Loading></Loading>
-        </div>
+        </MarketTemplate>
     );
-  } else if (allError(trendingCoinsData)) {
+  } else if (trendingCoinsData.error) {
     return (
-        <div id={"market"}>
-          <h1 className={"text-5xl font-bold my-5"}>Market</h1>
-
-          <SearchBar
-              query={query}
-              setQuery={setQuery}
-          ></SearchBar>
-
+        <MarketTemplate query={query} setQuery={setQuery}>
           <Error/>
-        </div>
+        </MarketTemplate>
     );
 
-  } else if (allData(trendingCoinsData)) {
+  } else if (trendingCoinsData.data) {
+    const lastCoinIndex = currentPage * coinsPerPage
+    const firstCoinIndex = lastCoinIndex - coinsPerPage
+    const currentTrendingCoinsData = trendingCoinsData.data.slice(firstCoinIndex, lastCoinIndex)
+
     return (
-        <div id={"market"}>
-          <h1 className={"text-5xl font-bold my-5"}>Market</h1>
-
-          <SearchBar
-              query={query}
-              setQuery={setQuery}
-          ></SearchBar>
-
-          <div className="relative hidden sm:block overflow-x-auto shadow-md sm:rounded-lg mt-24 font-bold text-2xl">
-            <div className="text-left ">
-              <div className="  bg-gradient-to-tr from-indigo-800 via-purple-800 to-pink-500 text-my-white grid grid-cols-4 grid-rows-1">
-                <div  className="px-6 py-3 my-auto">
-                  Coin
-                </div>
-                <div  className="px-6 py-3 my-auto" >
-                  Price
-                </div>
-                <div  className="px-6 py-3 my-auto">
-                 24h Change
-                </div>
-                <div  className="px-6 py-3 my-auto">
-                  Market Cap
-                </div>
-              </div>
-            </div>
-            {
-              trendingCoinsData.map((coin) => {
-                return (
-
-                    <MarketCoin
-                        key={coin.data.id}
-                        img={coin.data.image.large}
-                        name={coin.data.name}
-                        price={coin.data.market_data.current_price.usd}
-                        change={coin.data.market_data.price_change_percentage_24h}
-                    ></MarketCoin>
-                )
-              })
-            }
-          </div>
-
-          <div className={"sm:hidden flex flex-col mt-24 gap-12"}>
-            {
-              trendingCoinsData.map((coin) => {
-                return (
-
-                    <HeaderCoin
-                        key={coin.data.id}
-                        img={coin.data.image.large}
-                        name={coin.data.name}
-                        price={coin.data.market_data.current_price.usd}
-                        change={coin.data.market_data.price_change_percentage_24h}
-                    ></HeaderCoin>
-                )
-              })
-            }
-          </div>
-
-        </div>
+        <MarketTemplate query={query} setQuery={setQuery}>
+          <MarketTable coinsData={currentTrendingCoinsData}/>
+          <MobileMarketTable coinsData={currentTrendingCoinsData}/>
+          <MarketPagination
+              id={'trend'}
+              totalCoins={trendingCoinsData.data.length}
+              currentPage={currentPage}
+              coinsPerPage={coinsPerPage}
+              setCurrentPage={setCurrentPage}
+          />
+        </MarketTemplate>
     );
   }
 

@@ -3,11 +3,13 @@ import React from 'react';
 import btc from '../images/home/btc-logo.png'
 // @ts-ignore
 import eth from '../images/home/eth-logo.png'
-import HeaderCoin from "./UI/HeaderCoin";
+import Coin from "../components/UI/common/Coin";
 import {useQueries} from "react-query";
 import axios from "axios";
-import Loading from "./UI/Loading";
-import Error from "./UI/Error";
+import Loading from "./UI/common/Loading";
+import Error from "./UI/common/Error";
+import HeaderTemplate from "./UI/HeaderTemplate";
+import FollowButton from "./UI/common/FollowButton";
 
 function Header() {
 
@@ -46,98 +48,62 @@ function Header() {
 
   if (bitcoin.isLoading || ethereum.isLoading || solana.isLoading || ripple.isLoading) {
     return (
-        <>
-          <div className={"pt-24 pb-64"}>
-            <div className="flex relative">
-              <img
-                  className={"w-20 h-20 absolute top-4 2xl:left-16 xl:left-8  lg:left-0  2xl:block xl:block lg:block   hidden animate-bounce"}
-                  src={btc} alt=""/>
-              <div className={"flex-col text-center text-8xl mx-auto "}>
-                <p className={"font-bold"}>TRACK AND TRADE</p>
-                <p className={"bg-gradient-to-r from-indigo-800 via-purple-800 to-pink-500 bg-clip-text text-transparent font-bold"}>CRYPTO
-                  CURRENCIES</p>
-              </div>
-              <img
-                  className={"w-20 h-20 absolute top-4 2xl:right-16 xl:right-8 lg:right-0  2xl:block xl:block lg:block hidden  animate-bounce"}
-                  src={eth} alt=""/>
-            </div>
-            <div className={"flex justify-around mt-24"}>
-              <Loading/>
-              <Loading/>
-              <Loading/>
-              <Loading/>
-            </div>
+        <HeaderTemplate>
+          <div className={"flex justify-around mt-24"}>
+            <Loading/>
+            <Loading/>
+            <Loading/>
+            <Loading/>
           </div>
-        </>
+        </HeaderTemplate>
+
     )
   } else if (bitcoin.error || ethereum.error || solana.error || ripple.error) {
     return (
         <>
-          <div className={"pt-24 pb-64"}>
-            <div className="flex relative">
-              <img
-                  className={"w-20 h-20 absolute top-4 2xl:left-16 xl:left-8  lg:left-0  2xl:block xl:block lg:block   hidden animate-bounce"}
-                  src={btc} alt=""/>
-              <div className={"flex-col text-center text-8xl mx-auto "}>
-                <p className={"font-bold"}>TRACK AND TRADE</p>
-                <p className={"bg-gradient-to-r from-indigo-800 via-purple-800 to-pink-500 bg-clip-text text-transparent font-bold"}>CRYPTO
-                  CURRENCIES</p>
-              </div>
-              <img
-                  className={"w-20 h-20 absolute top-4 2xl:right-16 xl:right-8 lg:right-0  2xl:block xl:block lg:block hidden  animate-bounce"}
-                  src={eth} alt=""/>
-            </div>
+          <HeaderTemplate>
             <Error/>
-          </div>
+          </HeaderTemplate>
         </>
     )
   } else if (bitcoin.data || ethereum.data || solana.data || ripple.data) {
     return (
-        <div className={"pt-32 pb-56"}>
-          <div className="flex relative">
-            <img
-                className={"w-20 h-20 absolute top-4 2xl:left-16 xl:left-8  lg:left-0  2xl:block xl:block lg:block   hidden animate-bounce"}
-                src={btc} alt=""/>
-            <div className={"flex-col text-center sm:text-8xl text-5xl mx-auto "}>
-              <p className={"font-bold"}>TRACK AND TRADE</p>
-              <p className={"bg-gradient-to-r from-indigo-800 via-purple-800 to-pink-500 bg-clip-text text-transparent font-bold"}>CRYPTO
-                CURRENCIES</p>
-            </div>
-            <img
-                className={"w-20 h-20 absolute top-4 2xl:right-16 xl:right-8 lg:right-0  2xl:block xl:block lg:block hidden  animate-bounce"}
-                src={eth} alt=""/>
-          </div>
+        <HeaderTemplate>
           <div
               className={"md:grid-rows-1 md:gap-0 md:grid-cols-4 sm:grid-rows-2 sm:grid-cols-2 sm:grid  hidden gap-8 mt-24 "}>
-            <HeaderCoin
+            <Coin
+                id={bitcoin.data.id}
                 img={bitcoin.data.image.large}
                 name={bitcoin.data.name}
                 price={bitcoin.data.market_data.current_price.usd}
                 change={bitcoin.data.market_data.price_change_percentage_24h}
-            ></HeaderCoin>
-            <HeaderCoin
+            ></Coin>
+            <Coin
+                id={ethereum.data.id}
                 img={ethereum.data.image.large}
                 name={ethereum.data.name}
                 price={ethereum.data.market_data.current_price.usd}
-                change={ethereum.data.market_data.price_change_percentage_24h}></HeaderCoin>
-            <HeaderCoin
+                change={ethereum.data.market_data.price_change_percentage_24h}></Coin>
+            <Coin
+                id={solana.data.id}
                 img={solana.data.image.large}
                 name={solana.data.name}
                 price={solana.data.market_data.current_price.usd}
-                change={solana.data.market_data.price_change_percentage_24h}></HeaderCoin>
-            <HeaderCoin
+                change={solana.data.market_data.price_change_percentage_24h}></Coin>
+            <Coin
+                id={ripple.data.id}
                 img={ripple.data.image.large}
                 name={ripple.data.name}
                 price={ripple.data.market_data.current_price.usd}
-                change={ripple.data.market_data.price_change_percentage_24h}></HeaderCoin>
+                change={ripple.data.market_data.price_change_percentage_24h}></Coin>
           </div>
 
-          <a href="#market" className=" sm:hidden mx-auto mt-16 flex justify-center space-x-8  rounded-full p-8 max-w-sm bg-gradient-to-tr from-indigo-800 via-purple-800 to-pink-500 ">
-            <p className={"my-auto"}>See coins</p>
-            <svg className={"my-auto"} xmlns="http://www.w3.org/2000/svg" fill={"#fff"} height="1em" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></svg>
-          </a>
-
-        </div>
+          <div className={'sm:hidden'}>
+            <FollowButton content={'See coins'}
+                          link={'#market'}
+            ></FollowButton>
+          </div>
+        </HeaderTemplate>
     );
   }
   return <></>

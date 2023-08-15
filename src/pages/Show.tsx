@@ -1,16 +1,42 @@
-import React from 'react';
-import {useQueries} from "react-query";
+import React, {useState} from 'react';
+import {useQueries, useQuery} from "react-query";
 import axios from "axios";
 import {useParams} from "react-router-dom";
-import {Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis} from "recharts";
 import useChartDataDefine from "../hooks/useChartDataDefine";
-// @ts-ignore
-import DOMPurify from "dompurify";
-// @ts-ignore
-import { format } from "d3-format";
+import Error from "../components/UI/common/Error";
+import Loading from "../components/UI/common/Loading";
+import CoinChart from "../components/UI/chart/CoinChart";
+import PeriodButtons from "../components/UI/chart/PeriodButtons";
+import AlertForm from "../components/AlertForm";
+import CoinChartHeader from "../components/UI/chart/CoinChartHeader";
+import CoinChartDescription from "../components/UI/chart/CoinChartDescription";
+import useWindowSize from "../hooks/useWindowSize";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import CoinGeckoFullCoinInfo from "../models/coin/CoinGeckoFullCoinInfo";
+import {useSelector} from "react-redux";
+import {selectAuth} from "../features/auth/authSlice";
+import ShowTemplate from "../components/UI/show/ShowTemplate";
 
 
 const Show = () => {
+  const axiosPrivate = useAxiosPrivate();
+
+//trigger token refresh on page reload
+  const currentUserData = useQuery(
+      {
+        queryKey: ['currentUser'],
+        queryFn:
+            async () => {
+              await axiosPrivate.get("http://localhost:8080/api/v1/users/currentUser")
+            }
+      }
+  )
+
+  const {user} = useSelector(selectAuth);
+
+
+  const [toggledMenu, setToggledMenu] = useState(false);
+  const width = useWindowSize();
 
   const params = useParams()
 
@@ -27,7 +53,7 @@ const Show = () => {
           queryKey: ['coinDesc'],
           queryFn:
               async () => {
-                return await axios.get(`https://api.coingecko.com/api/v3/coins/${params.id}?localization=false&market_data=true`).then(response => response.data)
+                return await axios.get<CoinGeckoFullCoinInfo>(`https://api.coingecko.com/api/v3/coins/${params.id}?localization=false&market_data=true`).then(response => response.data)
               }
         }
       ]
@@ -35,61 +61,60 @@ const Show = () => {
 
   const chartData = useChartDataDefine(chartCoin.data)
 
-  if (chartCoin.isLoading || coinDesc.isLoading) return <> Loading...</>
-
-  else if (chartCoin.error || coinDesc.error) return <>Oops... something went wrong </>
-
-  else if (chartCoin.data && coinDesc.data) {
-
-    const priceUsd = coinDesc.data.market_data.current_price.usd
-
-    let formatValue
-    if (priceUsd > 100) formatValue = format(".0f")
-    else if (priceUsd > 0.0099) formatValue = format(".3f")
-    else formatValue = format(".15f");
+  if (chartCoin.isLoading || coinDesc.isLoading) {
+    return (
+        <ShowTemplate
+            width={width}
+            toggledMenu={toggledMenu}
+            setToggledMenu={setToggledMenu}
+        >
+          <Loading padding={'p-48'}/>
+        </ShowTemplate>
+    )
+  } else if (chartCoin.error || coinDesc.error) {
+    return (
+        <ShowTemplate
+            width={width}
+            toggledMenu={toggledMenu}
+            setToggledMenu={setToggledMenu}
+        >
+          <Error padding={'p-48'}/>
+        </ShowTemplate>
+    )
+  } else if (chartCoin.data && coinDesc.data && chartData[chartData.length - 1]) {
+    const change = coinDesc.data.market_data.price_change_percentage_24h
 
     return (
-        <>
-          <AreaChart
-              width={500}
-              height={400}
-              data={chartData}
-              margin={{
-                top: 10,
-                right: 0,
-                left: 100,
-                bottom: 0
-              }}
-          >
-            <CartesianGrid strokeDasharray="3 3"/>
-            <XAxis dataKey="date"/>
-            <YAxis domain={[priceUsd]}
-                   tickFormatter={formatValue}/>
-            <Tooltip/>
-            <Area type="monotone" dataKey="price" stroke="#8884d8" fill="#000"/>
-          </AreaChart>
+        <ShowTemplate
+            width={width}
+            toggledMenu={toggledMenu}
+            setToggledMenu={setToggledMenu}
+        >
+          <CoinChartHeader
+              coinDesc={coinDesc}
+              chartData={chartData}
+              change={change}
+          />
+          <div className={'flex flex-col pt-24'}>
+            <div className={'w-[99%] h-[500px]'}>
+              <CoinChart
+                  chartData={chartData}
+                  currentPrice={Math.round(coinDesc.data.market_data.current_price.usd)}
+              />
+            </div>
+            <PeriodButtons/>
 
+            <CoinChartDescription coinDesc={coinDesc}/>
 
-          <>
-
-            <>
-              <div className=""><p>
-                {coinDesc.data.name}
-              </p></div>
-              <div className=""><p
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(
-                        coinDesc.data.description.en
-                    ),
-                  }}
-              >
-              </p></div>
-            </>
-
-          </>
-        </>
-    );
+            {user ?
+                <AlertForm coinDesc={coinDesc.data}/> :
+                <div> Log In to create an alert</div>
+            }
+          </div>
+        </ShowTemplate>
+    )
   }
+
 
   return <></>
 
