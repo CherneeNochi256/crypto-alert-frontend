@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/crypto-alert-frontend/static/css/main.87d833f8.css",
-    "main.js": "/crypto-alert-frontend/static/js/main.da549d4e.js",
+    "main.js": "/crypto-alert-frontend/static/js/main.f40f83de.js",
     "static/media/bitcoin-in-hand.png": "/crypto-alert-frontend/static/media/bitcoin-in-hand.2121db5560f09f30c3aa.png",
     "static/media/btc-logo.png": "/crypto-alert-frontend/static/media/btc-logo.82491fef997ab841639c.png",
     "static/media/eth-logo.png": "/crypto-alert-frontend/static/media/eth-logo.c6cffe78f0c6abc85da9.png",
     "index.html": "/crypto-alert-frontend/index.html",
     "main.87d833f8.css.map": "/crypto-alert-frontend/static/css/main.87d833f8.css.map",
-    "main.da549d4e.js.map": "/crypto-alert-frontend/static/js/main.da549d4e.js.map"
+    "main.f40f83de.js.map": "/crypto-alert-frontend/static/js/main.f40f83de.js.map"
   },
   "entrypoints": [
     "static/css/main.87d833f8.css",
-    "static/js/main.da549d4e.js"
+    "static/js/main.f40f83de.js"
   ]
 }
