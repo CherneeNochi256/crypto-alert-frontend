@@ -1,16 +1,13 @@
 import React from 'react';
 import SidebarOverviewCoin from "./SidebarOverviewCoin";
+import CoinGeckoMarketsCoin from "../../../models/coin/coinGecko/CoinGeckoMarketsCoin";
 
-export type CoinData = {
-  image: string,
-  id: string,
-  price_change_24h: number,
-  price_change_percentage_24h: number,
-  symbol: string,
-  current_price: number
+interface Props {
+  data: CoinGeckoMarketsCoin[],
+  setCoinId: (value: string) => void
 }
 
-function SidebarOverviewTable(props: any) {
+function SidebarOverviewTable({data, setCoinId}: Props) {
 
   return (
       <div className={'w-full'}>
@@ -41,9 +38,9 @@ function SidebarOverviewTable(props: any) {
         <div className={'max-h-[350px] overflow-y-scroll border-b-8  border-my-gray scrollbar-hide'}>
 
           {
-            props.data.map((coin: CoinData) => {
+            data.map((coin: CoinGeckoMarketsCoin) => {
               return (
-                  <div key={coin.id} onClick={() => props.setCoinId(`${coin.id}`)}>
+                  <div key={coin.id} onClick={() => setCoinId(`${coin.id}`)}>
                     <SidebarOverviewCoin
                         coin={coin}
                     />

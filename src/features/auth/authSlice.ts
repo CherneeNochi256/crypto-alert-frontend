@@ -19,19 +19,19 @@ export const authSlide = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setUser: (state, action:PayloadAction<User | undefined>) => {
+    setUser: (state, action: PayloadAction<User | undefined>) => {
       state.user = action.payload
     },
-    setAccessToken: (state, action:PayloadAction<string | undefined>) => {
+    setAccessToken: (state, action: PayloadAction<string | undefined>) => {
       state.accessToken = action.payload
     },
-    addCoinAlert: (state, action:PayloadAction<CoinAlert> ) =>{
+    addCoinAlert: (state, action: PayloadAction<CoinAlert>) => {
       state.user?.coinAlerts.unshift(action.payload)
     }
   }
 })
 
-export const {setUser, setAccessToken,addCoinAlert} = authSlide.actions
+export const {setUser, setAccessToken, addCoinAlert} = authSlide.actions
 
 export const selectAuth = (state: RootState) => state.auth
 

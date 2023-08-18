@@ -2,13 +2,19 @@ import React from 'react';
 import {Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 import {format, parseISO} from "date-fns";
 import CustomTooltip from "./CustomTooltip";
+import ChartDataPoint from "../../../models/coin/ChartDataPoint";
 
-function CoinChart(props: any) {
+interface Props {
+  chartData: ChartDataPoint[]
+  currentPrice: number
+}
+
+function CoinChart({chartData, currentPrice}: Props) {
   return (
 
       <ResponsiveContainer className={'row-span-2 '} width="100%">
         <AreaChart
-            data={props.chartData}
+            data={chartData}
             className={'text-sm '}
         >
           <defs>
@@ -32,7 +38,7 @@ function CoinChart(props: any) {
 
           />
 
-          <YAxis domain={[props.currentPrice]}
+          <YAxis domain={[currentPrice]}
                  tickFormatter={(priceUsd) => {
 
                    if (priceUsd > 0.0) return `$${priceUsd.toFixed(2)}`

@@ -30,19 +30,18 @@ const useAxiosPrivate = () => {
         },
         async (error) => {
           const prevRequest = error?.config;
-          if (error?.response?.status === 403 && !prevRequest?.sent  && !refIsOnlyOneRefetch.current) {
+          if (error?.response?.status === 403 && !prevRequest?.sent && !refIsOnlyOneRefetch.current) {
             prevRequest.sent = true;
             refIsOnlyOneRefetch.current = true
             const newAccessToken = await updateAccessToken();//for some reason redux isn't fast enough to update state and then use this state immediately after this, so i use local variable with new token, await keyword didn't help like it did in login and register forms
             prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-            const currentUserData = await axiosPrivate.get<User>('http://localhost:8080/api/v1/users/currentUser');
+            const currentUserData = await axiosPrivate.get<User>('users/currentUser');
             await dispatch(setUser(currentUserData.data))
             return axiosPrivate(prevRequest);
           }
           return Promise.reject(error);
         }
     );
-
 
 
     return () => {

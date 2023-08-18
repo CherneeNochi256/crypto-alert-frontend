@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import CoinGeckoFullCoinInfo from "../models/coin/CoinGeckoFullCoinInfo";
+import CoinGeckoFullCoinInfo from "../models/coin/coinGecko/CoinGeckoFullCoinInfo";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faInfoCircle} from "@fortawesome/free-solid-svg-icons";
 import {addCoinAlert} from "../features/auth/authSlice";

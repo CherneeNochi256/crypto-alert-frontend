@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {useQueries, useQuery} from "react-query";
-import axios from "axios";
 import {useParams} from "react-router-dom";
 import useChartDataDefine from "../hooks/useChartDataDefine";
 import Error from "../components/UI/common/Error";
@@ -12,10 +11,13 @@ import CoinChartHeader from "../components/UI/chart/CoinChartHeader";
 import CoinChartDescription from "../components/UI/chart/CoinChartDescription";
 import useWindowSize from "../hooks/useWindowSize";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import CoinGeckoFullCoinInfo from "../models/coin/CoinGeckoFullCoinInfo";
+import CoinGeckoFullCoinInfo from "../models/coin/coinGecko/CoinGeckoFullCoinInfo";
 import {useSelector} from "react-redux";
 import {selectAuth} from "../features/auth/authSlice";
 import ShowTemplate from "../components/UI/show/ShowTemplate";
+import {coinGeckoApi} from "../api/axios";
+import CoinGeckoMarketChartResponse from "../models/coin/coinGecko/CoinGeckoMarketChartResponse";
+import ChartDataPoint from "../models/coin/ChartDataPoint";
 
 
 const Show = () => {
@@ -27,15 +29,16 @@ const Show = () => {
         queryKey: ['currentUser'],
         queryFn:
             async () => {
-              await axiosPrivate.get("http://localhost:8080/api/v1/users/currentUser")
+              await axiosPrivate.get("users/currentUser")
             }
       }
   )
 
   const {user} = useSelector(selectAuth);
 
-
   const [toggledMenu, setToggledMenu] = useState(false);
+  const [daysAmount, setDaysAmount] = useState('7')
+
   const width = useWindowSize();
 
   const params = useParams()
@@ -43,23 +46,24 @@ const Show = () => {
   const [chartCoin, coinDesc] = useQueries(
       [
         {
-          queryKey: ['chartCoins'],
+          queryKey: ['chartCoin', daysAmount],
           queryFn:
               async () => {
-                return await axios.get(`https://api.coingecko.com/api/v3/coins/${params.id}/market_chart?vs_currency=usd&days=7`).then(response => response.data)
-              }
+                return await coinGeckoApi.get<CoinGeckoMarketChartResponse>(`coins/${params.id}/market_chart?vs_currency=usd&days=${daysAmount}`).then(response => response.data)
+              },
+          enabled: !!daysAmount
         },
         {
           queryKey: ['coinDesc'],
           queryFn:
               async () => {
-                return await axios.get<CoinGeckoFullCoinInfo>(`https://api.coingecko.com/api/v3/coins/${params.id}?localization=false&market_data=true`).then(response => response.data)
+                return await coinGeckoApi.get<CoinGeckoFullCoinInfo>(`coins/${params.id}?localization=false&market_data=true`).then(response => response.data)
               }
         }
       ]
   )
 
-  const chartData = useChartDataDefine(chartCoin.data)
+  const chartData: ChartDataPoint[] = useChartDataDefine(chartCoin?.data?.prices)
 
   if (chartCoin.isLoading || coinDesc.isLoading) {
     return (
@@ -82,7 +86,6 @@ const Show = () => {
         </ShowTemplate>
     )
   } else if (chartCoin.data && coinDesc.data && chartData[chartData.length - 1]) {
-    const change = coinDesc.data.market_data.price_change_percentage_24h
 
     return (
         <ShowTemplate
@@ -91,9 +94,8 @@ const Show = () => {
             setToggledMenu={setToggledMenu}
         >
           <CoinChartHeader
-              coinDesc={coinDesc}
+              coinDesc={coinDesc.data}
               chartData={chartData}
-              change={change}
           />
           <div className={'flex flex-col pt-24'}>
             <div className={'w-[99%] h-[500px]'}>
@@ -102,13 +104,15 @@ const Show = () => {
                   currentPrice={Math.round(coinDesc.data.market_data.current_price.usd)}
               />
             </div>
-            <PeriodButtons/>
+            <PeriodButtons setDaysAmount={setDaysAmount}/>
 
             <CoinChartDescription coinDesc={coinDesc}/>
 
             {user ?
                 <AlertForm coinDesc={coinDesc.data}/> :
-                <div> Log In to create an alert</div>
+                <div className={'text-4xl text-red-600 pb-12'}>
+                  You need to log in to create an alert...
+                </div>
             }
           </div>
         </ShowTemplate>

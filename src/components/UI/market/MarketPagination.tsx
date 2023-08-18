@@ -1,14 +1,23 @@
 import React, {useState} from 'react';
 import MarketPaginationButton from "./MarketPaginationButton";
 
-function MarketPagination(props: any) {
+interface Props {
+  id: string
+  totalCoins: number
+  currentPage: number
+  coinsPerPage: number
+  setCurrentPage: (value: number) => void
+}
+
+
+function MarketPagination({id, totalCoins, currentPage, coinsPerPage, setCurrentPage}: Props) {
 
   const [clicked, setClicked] = useState('1')
 
-  const pages = Array(Math.ceil(props.totalCoins / props.coinsPerPage)).fill(1)
+  const pages = Array(Math.ceil(totalCoins / coinsPerPage)).fill(1)
 
-  if (props.id === 'trend') {
-    props.setCurrentPage(1)
+  if (id === 'trend') {
+    setCurrentPage(1)
   }
 
   return (
@@ -17,9 +26,9 @@ function MarketPagination(props: any) {
           <a
               href={'#market'}
               onClick={() => {
-                if (props.currentPage !== 1) {
-                  const prev = props.currentPage - 1
-                  props.setCurrentPage(prev)
+                if (currentPage !== 1) {
+                  const prev = currentPage - 1
+                  setCurrentPage(prev)
                   setClicked(prev.toString())
                 }
               }}
@@ -38,16 +47,17 @@ function MarketPagination(props: any) {
                     clicked={clicked}
                     setClicked={setClicked}
                     number={index + 1}
-                    setCurrentPage={props.setCurrentPage}/>
+                    setCurrentPage={setCurrentPage}
+                />
               </li>
           )
         })}
         <li>
           <a href={'#market'}
              onClick={() => {
-               if (props.currentPage !== pages.length) {
-                 const next = props.currentPage + 1
-                 props.setCurrentPage(next)
+               if (currentPage !== pages.length) {
+                 const next = currentPage + 1
+                 setCurrentPage(next)
                  setClicked(next.toString())
                }
              }}

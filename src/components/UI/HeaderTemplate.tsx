@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {PropsWithChildren} from 'react';
 // @ts-ignore
 import btc from "../../images/home/btc-logo.png";
 // @ts-ignore
 import eth from "../../images/home/eth-logo.png";
 
-function HeaderTemplate(props: any) {
+function HeaderTemplate({children}: PropsWithChildren) {
   return (
       <div className={"pt-32 pb-56 "}>
         <div className="flex relative">
@@ -20,7 +20,7 @@ function HeaderTemplate(props: any) {
               className={"w-20 h-20 absolute top-4 2xl:right-16 xl:right-8 lg:right-0  lg:block  hidden  animate-bounce"}
               src={eth} alt=""/>
         </div>
-        {props.children}
+        {children}
       </div>
   );
 }

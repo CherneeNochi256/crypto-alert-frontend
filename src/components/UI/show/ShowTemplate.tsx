@@ -1,6 +1,5 @@
 import React, {PropsWithChildren} from 'react';
 import Navbar from "../../Navbar";
-import Loading from "../common/Loading";
 import Footer from "../../Footer";
 import Sidebar from "../../Sidebar";
 

@@ -3,7 +3,7 @@ export interface CoinAlert {
   coinId: string,
   desiredPrice: number,
   coinReachedDesiredPrice: boolean,
-  seen:boolean,
-  image:string,
-  updatedDate:string
+  seen: boolean,
+  image: string,
+  updatedDate: string
 }

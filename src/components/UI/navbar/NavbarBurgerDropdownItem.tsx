@@ -1,13 +1,13 @@
 import React from 'react';
 import NavLink from "../NavLink";
 
-interface Props{
+interface Props {
   locationPath: string,
-  navToId:string,
-  navItemName:string
+  navToId: string,
+  navItemName: string
 }
 
-const NavbarBurgerDropdownItem = ({locationPath,navToId,navItemName}:Props) => {
+const NavbarBurgerDropdownItem = ({locationPath, navToId, navItemName}: Props) => {
   return (
       <li>
         <div

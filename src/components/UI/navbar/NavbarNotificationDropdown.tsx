@@ -1,11 +1,11 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 import NavbarNotificationItem from "./NavbarNotificationItem";
 import {useAppSelector} from "../../../hooks/reduxHooks";
 import {selectAuth} from "../../../features/auth/authSlice";
-import {CoinAlert} from "../../../models/coin/CoinAlert";
 
 function NavbarNotificationDropdown() {
   const {user} = useAppSelector(selectAuth);
+
   const onlyUnseenAlerts = useMemo(() => {
     if (user?.coinAlerts && user.coinAlerts.length > 0) {
       return user.coinAlerts.filter(alert => !alert.seen);

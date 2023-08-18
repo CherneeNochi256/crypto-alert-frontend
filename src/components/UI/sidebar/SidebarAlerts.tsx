@@ -3,15 +3,16 @@ import SidebarTemplate from "./SidebarTemplate";
 import {useAppSelector} from "../../../hooks/reduxHooks";
 import {selectAuth} from "../../../features/auth/authSlice";
 import {CoinAlert} from "../../../models/coin/CoinAlert";
+import {Link} from "react-router-dom";
 
-function SidebarAlerts(props: any) {
+function SidebarAlerts() {
 
   const {user} = useAppSelector(selectAuth);
 
- let sortedAlerts = [] as CoinAlert[]
- if (user?.coinAlerts){
-  sortedAlerts = [...user.coinAlerts].sort((a, b) => Date.parse(b.updatedDate) - Date.parse(a.updatedDate))
-}
+  let sortedAlerts = [] as CoinAlert[]
+  if (user?.coinAlerts) {
+    sortedAlerts = [...user.coinAlerts].sort((a, b) => Date.parse(b.updatedDate) - Date.parse(a.updatedDate))
+  }
 
 
   return (
@@ -21,14 +22,15 @@ function SidebarAlerts(props: any) {
         <div className={''}>
 
           {
-            user?.coinAlerts && user?.coinAlerts.length > 0 && sortedAlerts?
+            user?.coinAlerts && user?.coinAlerts.length > 0 && sortedAlerts ?
                 <ul className={'flex-col w-full md:w-[384px] '}>
                   {
                     sortedAlerts.map(alert => {
                       return (
                           <li key={alert.id}>
-                            <a href="#"
-                               className=" text-gray-500 font-bold block w-full pl-4 py-2 border-b  border-t border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+                            <Link
+                                to={`/${alert.coinId}`}
+                                className=" text-gray-500 font-bold block w-full pl-4 py-2 border-b  border-t border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
                               <div className={'text-sm '}>
                                 {alert.coinId.toUpperCase()} Intersection {alert.desiredPrice}
                               </div>
@@ -51,13 +53,13 @@ function SidebarAlerts(props: any) {
                                   }
                                 </div>
                               </div>
-                            </a>
+                            </Link>
                           </li>
                       )
                     })
                   }
                 </ul> :
-                <div className={'text-center text-gray-600'}>
+                <div className={'text-center text-gray-600 w-full md:w-[384px]'}>
                   No alerts yet...
                 </div>
           }

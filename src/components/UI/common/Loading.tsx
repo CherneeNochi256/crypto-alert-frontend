@@ -1,10 +1,10 @@
 import React from 'react';
 
-interface Props{
-padding?:string
+interface Props {
+  padding?: string
 }
 
-function Loading({padding = 'p-24'}:Props) {
+function Loading({padding = 'p-24'}: Props) {
   return (
 
       <div

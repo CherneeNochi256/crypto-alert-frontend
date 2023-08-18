@@ -1,25 +1,27 @@
 import React from 'react';
 import {useQuery} from "react-query";
-import axios from "axios";
 import NewsCard from "./NewsCard";
 
 import SidebarTemplate from "./SidebarTemplate";
 import Error from "../common/Error";
+import {coinsNewsApi} from "../../../api/axios";
+import LoadingTemplate from "../common/LoadingTemplate";
+import CoinNewsResponse from "../../../models/coin/CoinNewsResponse";
 
-function SidebarNews(props: any) {
+function SidebarNews() {
 
   const {data, isLoading, error} = useQuery(
       {
         queryKey: ['news'],
         queryFn:
             async () => {
-              return await axios.get(`https://newsdata.io/api/1/news?apikey=pub_2647097c5a2a7428673fe9ce1c3c61c9a435b&q=crypto&language=en `)
+              return await coinsNewsApi.get<CoinNewsResponse>(`news?apikey=pub_2647097c5a2a7428673fe9ce1c3c61c9a435b&q=crypto&language=en `).then(res => res.data)
             }
       }
   );
 
 
-  const arrayOnlyForIteration = new Array(8).fill(1, 0, 8)
+  const arrayOnlyForIteration = [1, 1, 1, 1, 1, 1, 1, 1]
 
 
   if (isLoading) return (
@@ -29,15 +31,7 @@ function SidebarNews(props: any) {
           {
             arrayOnlyForIteration.slice(0, 4).map((el: any, index) => {
               return (
-                  <div role="status" className=" mr-16 w-[75%] mx-auto  p-6 max-w-sm animate-pulse">
-                    <div className="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
-                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px] mb-2.5"></div>
-                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5"></div>
-                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[330px] mb-2.5"></div>
-                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[300px] mb-2.5"></div>
-                    <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 max-w-[360px]"></div>
-                    <span className="sr-only">Loading...</span>
-                  </div>
+                  <LoadingTemplate/>
 
               )
             })}
@@ -54,7 +48,7 @@ function SidebarNews(props: any) {
 
 
   )
-  else if (data && data.data.results) {
+  else if (data && data.results) {
     return (
         <SidebarTemplate title={'NEWS'}
                          titlePosition={'right-40'}>
@@ -62,7 +56,7 @@ function SidebarNews(props: any) {
             {arrayOnlyForIteration.map((el: any, index) => {
               return (
                   <div key={index}>
-                    <NewsCard newsData={data.data.results[index]}/>
+                    <NewsCard articleData={data.results[index]}/>
                   </div>
               )
             })}

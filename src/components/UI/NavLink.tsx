@@ -2,13 +2,13 @@ import React from 'react';
 import {Link as ReactScrollLink} from "react-scroll/modules";
 import {Link} from "react-router-dom";
 
-interface Props{
+interface Props {
   locationPath: string,
-  navToId:string,
-  navItemName:string
+  navToId: string,
+  navItemName: string
 }
 
-const NavLink = ({locationPath,navToId,navItemName}:Props) => {
+const NavLink = ({locationPath, navToId, navItemName}: Props) => {
   return (
       <div>
         {

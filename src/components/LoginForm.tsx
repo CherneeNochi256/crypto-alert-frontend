@@ -118,7 +118,7 @@ const LoginForm = ({toggleForm}: Props) => {
            aria-live="assertive">
           {errorMessage}
         </p>
-        <h1 className={'mb-4 text-xl font-medium  text-white'}>Registration</h1>
+        <h1 className={'mb-4 text-xl font-medium  text-white'}>Log in</h1>
         {
           logInRequestData.isLoading || logInRequestData.isFetching ?
               <Loading/> :
@@ -159,9 +159,12 @@ const LoginForm = ({toggleForm}: Props) => {
                 </button>
               </form>
         }
-        <div className="text-sm font-medium text-gray-500 dark:text-gray-300 mt-2">
+        <div className="text-sm font-medium text-gray-500 dark:text-gray-300 mt-2 flex ">
           Don't have an account?
-          <a href="#" className="text-blue-700 hover:underline dark:text-blue-500">Sign up</a>
+          <div
+              className="text-blue-700 hover:underline dark:text-blue-500 ml-2"
+              onClick={() => toggleForm('signIn')}
+          >Sign up</div>
         </div>
       </section>
   )

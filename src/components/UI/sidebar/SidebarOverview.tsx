@@ -1,48 +1,43 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import SidebarTemplate from "./SidebarTemplate";
 
-import SidebarOverviewTable, {CoinData} from "./SidebarOverviewTable";
+import SidebarOverviewTable from "./SidebarOverviewTable";
 import SidebarOverviewSummary from "./SidebarOverviewSummary";
 import Loading from "../common/Loading";
 import Error from "../common/Error";
-import {MarketCoins} from "../../Sidebar";
 import {useQuery} from "react-query";
-import axios from "axios";
-import {concatSearchedIds} from "../../../utils/Market";
+import {coinGeckoApi} from "../../../api/axios";
+import CoinGeckoFullCoinInfo from "../../../models/coin/coinGecko/CoinGeckoFullCoinInfo";
+import CoinGeckoMarketsCoin from "../../../models/coin/coinGecko/CoinGeckoMarketsCoin";
 
-type Props = {
-  isLoading: boolean,
-  error: unknown,
-  data: MarketCoins | undefined
-}
 
-function SidebarOverview({isLoading, error, data}: Props) {
+function SidebarOverview() {
   const [coinId, setCoinId] = useState('bitcoin');
 
 
-  const coinData = useQuery(
+  const markets = useQuery(
       {
-        queryKey: ['searchedCoinsData', coinId],
+        queryKey: ['coinList'],
         queryFn:
             async () => {
-              return await axios.get(`https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=false`).then(response => response.data)
+              return await coinGeckoApi.get<CoinGeckoMarketsCoin[]>(`coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en`).then(res => res.data)
+            }
+      }
+  );
+
+  const currentCoin = useQuery(
+      {
+        queryKey: ['fullCurrentCoinInfo', coinId],
+        queryFn:
+            async () => {
+              return await coinGeckoApi.get<CoinGeckoFullCoinInfo>(`coins/${coinId}?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=false`).then(response => response.data)
             },
         enabled: !!coinId
       }
   )
 
-  const tableData: CoinData = {
-    image: '',
-    id: 'bitcoin',
-    symbol: 'btc',
-    current_price: 0.3232,
-    price_change_24h: 32.56,
-    price_change_percentage_24h: 36
-  }
 
-  const coinsData: CoinData[] = [tableData]
-
-  if (isLoading || coinData.isLoading) return (
+  if (markets.isLoading || currentCoin.isLoading) return (
       <SidebarTemplate title={'OVERVIEW'}
                        titlePosition={'right-24'}
       >
@@ -51,7 +46,7 @@ function SidebarOverview({isLoading, error, data}: Props) {
         </div>
       </SidebarTemplate>
   )
-  else if (error || coinData.error) return (
+  else if (markets.error || currentCoin.error) return (
 
       <SidebarTemplate title={'OVERVIEW'}
                        titlePosition={'right-24'}
@@ -61,8 +56,7 @@ function SidebarOverview({isLoading, error, data}: Props) {
         </div>
       </SidebarTemplate>
   )
-  else if (data && coinData.data) {
-    console.log(coinData.data)
+  else if (markets.data && currentCoin.data) {
     return (
         <SidebarTemplate title={'OVERVIEW'}
                          titlePosition={'right-24'}
@@ -70,13 +64,12 @@ function SidebarOverview({isLoading, error, data}: Props) {
           <div className={' flex-col w-[99%] md:w-[384px] mx-auto rounded-lg shadow justify-center items-center'}>
 
             <SidebarOverviewTable
-                data={data.data}
+                data={markets.data}
                 setCoinId={setCoinId}
             />
 
             <SidebarOverviewSummary
-                coinId={coinId}
-                coinData={coinData.data}
+                data={currentCoin.data}
             />
           </div>
         </SidebarTemplate>

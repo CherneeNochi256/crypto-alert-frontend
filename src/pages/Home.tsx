@@ -29,7 +29,7 @@ const Home = () => {
             queryKey: ['currentUser'],
             queryFn:
                 async () => {
-                  await axiosPrivate.get<User>("http://localhost:8080/api/v1/users/currentUser")
+                  await axiosPrivate.get<User>("users/currentUser")
                 }
           }
       )

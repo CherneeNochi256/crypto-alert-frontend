@@ -1,8 +1,11 @@
 import React from 'react';
-import {Link} from "react-router-dom";
-import {CoinData} from "./SidebarOverviewTable";
+import CoinGeckoMarketsCoin from "../../../models/coin/coinGecko/CoinGeckoMarketsCoin";
 
-function SidebarOverviewCoin({coin}: CoinData | any) {
+interface Props {
+  coin: CoinGeckoMarketsCoin
+}
+
+function SidebarOverviewCoin({coin}: Props) {
   return (
       <div>
         <div className={'w-full flex pl-3 pt-4 border-b'}>

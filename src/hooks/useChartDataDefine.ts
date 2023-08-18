@@ -1,29 +1,24 @@
 import {useEffect, useState} from "react";
+import ChartDataPoint from "../models/coin/ChartDataPoint";
 
 
-
-
-export interface ChartCoinFetched {
-  prices: [],
-
-}
-
-export default function useChartDataDefine(chartCoins: ChartCoinFetched) {
-  const [charData, setChartData] = useState(new Array())
+export default function useChartDataDefine(prices: Array<number[]> | undefined) {
+  const [charData, setChartData] = useState([] as Array<ChartDataPoint>)
   useEffect(() => {
-    if (chartCoins) {
-      setChartData((chartCoins.prices.map((el: Array<number>): { date: string; price: number } => {
-                const [timestamp, price] = el
+    if (prices) {
+      setChartData((prices.map(el => {
+                const timestamp = el[0]
+                const price = el[1]
                 const date = new Date(timestamp).toISOString()
-                return ({
-                      date,
-                      price
-                    }
-                )
+                const chartDataPoint: ChartDataPoint = {
+                  date,
+                  price
+                }
+                return chartDataPoint
               })
           )
       )
     }
-  }, [chartCoins])
+  }, [prices])
   return charData
 }

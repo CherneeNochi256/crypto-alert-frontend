@@ -1,16 +1,19 @@
 import React, {useState} from 'react';
 import useDebounce from "../hooks/useDebounce";
 import {useQueries, useQuery} from "react-query";
-import axios from "axios";
-import {concatSearchedIds, concatTrendingIds} from "../utils/Market";
+import {coinGeckoApi} from "../api/axios";
+import {concatSearchedIds, concatTrendingIds} from "../utils/MarketUtils";
 import Loading from "./UI/common/Loading";
 import Error from "./UI/common/Error";
 import MarketTable from "./UI/market/MarketTable";
 import MobileMarketTable from "./UI/market/MobileMarketTable";
 import MarketTemplate from "./UI/market/MarketTemplate";
 import MarketPagination from "./UI/market/MarketPagination";
+import CoinGeckoTrendingCoinsResponse from "../models/coin/coinGecko/CoinGeckoTrendingCoinsResponse";
+import CoinGeckoSearchCoinsResponse from "../models/coin/coinGecko/CoinGeckoSearchCoinsResponse";
+import CoinGeckoMarketsCoin from "../models/coin/coinGecko/CoinGeckoMarketsCoin";
 
-function Market(props: any) {
+function Market() {
 
   const [query, setQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -24,7 +27,7 @@ function Market(props: any) {
           queryKey: ['trendingCoins'],
           queryFn:
               async () => {
-                return await axios.get(`https://api.coingecko.com/api/v3/search/trending`).then(response => response.data)
+                return await coinGeckoApi.get<CoinGeckoTrendingCoinsResponse>(`search/trending`).then(response => response.data)
               }
         },
         {
@@ -32,19 +35,21 @@ function Market(props: any) {
           queryFn:
               async () => {
                 if (debouncedSearchTerm) {
-                  return await axios.get(`https://api.coingecko.com/api/v3/search?query=${debouncedSearchTerm}`).then(response => response.data)
+                  return await coinGeckoApi.get<CoinGeckoSearchCoinsResponse>(`search?query=${debouncedSearchTerm}`).then(response => response.data)
                 }
               }
         }
       ]
   )
 
+  // two upper request doesn't provide all necessary data, so I need to make two more fetches based on their info, with info that I need
+
   const trendingCoinsData = useQuery(
       {
         queryKey: ['trendingCoinsData', trendingCoins.data],
         queryFn:
             async () => {
-              return await axios.get(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${concatTrendingIds(trendingCoins.data.coins)}&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en`).then(response => response.data)
+              return await coinGeckoApi.get<CoinGeckoMarketsCoin[]>(`coins/markets?vs_currency=usd&ids=${concatTrendingIds(trendingCoins.data?.coins)}&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en`).then(response => response.data)
             },
         enabled: !!trendingCoins.data
       }
@@ -55,7 +60,7 @@ function Market(props: any) {
         queryKey: ['searchedCoinsData', searchedCoins.data],
         queryFn:
             async () => {
-              return await axios.get(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${concatSearchedIds(searchedCoins.data.coins)}&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en`).then(response => response.data)
+              return await coinGeckoApi.get<CoinGeckoMarketsCoin[]>(`coins/markets?vs_currency=usd&ids=${concatSearchedIds(searchedCoins.data?.coins)}&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en`).then(response => response.data)
             },
         enabled: !!searchedCoins.data
       }

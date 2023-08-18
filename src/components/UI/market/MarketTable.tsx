@@ -1,7 +1,12 @@
 import React from 'react';
 import MarketCoin from "./MarketCoin";
+import CoinGeckoMarketsCoin from "../../../models/coin/coinGecko/CoinGeckoMarketsCoin";
 
-function MarketTable(props: any) {
+interface Props {
+  coinsData: CoinGeckoMarketsCoin[]
+}
+
+function MarketTable({coinsData}: Props) {
   return (
       <div className="relative hidden sm:block overflow-x-auto shadow-md sm:rounded-lg mt-24 font-bold text-2xl">
         <div className="text-left ">
@@ -23,17 +28,10 @@ function MarketTable(props: any) {
         </div>
         {
 
-          props.coinsData.map((coin: any) => {
+          coinsData.map((coin: CoinGeckoMarketsCoin) => {
             return (
                 <div key={coin.id}>
-                  <MarketCoin
-                      id={coin.id}
-                      img={coin.image}
-                      name={coin.name}
-                      price={coin.current_price}
-                      change={coin.price_change_percentage_24h}
-                      marketCap={coin.market_cap}
-                  ></MarketCoin>
+                  <MarketCoin coin={coin}/>
                 </div>
             )
           })

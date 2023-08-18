@@ -1,20 +1,21 @@
 import React from 'react';
 import Coin from "../common/Coin";
+import CoinGeckoMarketsCoin from "../../../models/coin/coinGecko/CoinGeckoMarketsCoin";
 
-function MobileMarketTable(props: any) {
+interface Props {
+  coinsData: CoinGeckoMarketsCoin[]
+}
+
+function MobileMarketTable({coinsData}: Props) {
   return (
       <div className={"sm:hidden flex flex-col mt-24 gap-12 "}>
         {
-          props.coinsData.map((coin: any) => {
+          coinsData.map((coin: CoinGeckoMarketsCoin) => {
             return (
                 <div className={"mx-auto"} key={coin.id}>
                   <Coin
-                      id={coin.id}
-                      img={coin.image}
-                      name={coin.name}
-                      price={coin.current_price}
-                      change={coin.price_change_percentage_24h}
-                  ></Coin>
+                      coin={coin}
+                  />
                 </div>
             )
           })

@@ -237,8 +237,14 @@ const RegisterForm = ({toggleForm}: Props) => {
                 </button>
               </form>
         }
-        <div className="text-sm font-medium text-gray-500 dark:text-gray-300 mt-2">
-          Already registered? <a href="#" className="text-blue-700 hover:underline dark:text-blue-500">Sign in</a>
+        <div className="text-sm font-medium text-gray-500 dark:text-gray-300 mt-2 flex">
+          Already registered?
+          <div
+              className="text-blue-700 cursor-pointer hover:underline dark:text-blue-500 ml-2"
+              onClick={() => toggleForm('logIn')}
+          >
+            Sign in
+          </div>
         </div>
       </section>
 

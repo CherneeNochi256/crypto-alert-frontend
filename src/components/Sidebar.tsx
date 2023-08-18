@@ -2,51 +2,37 @@ import React, {useState} from 'react';
 import SidebarNews from "./UI/sidebar/SidebarNews";
 import SidebarAlerts from "./UI/sidebar/SidebarAlerts";
 import SidebarOverview from "./UI/sidebar/SidebarOverview";
-import {useQuery} from "react-query";
-import axios from "axios";
-import {CoinData} from "./UI/sidebar/SidebarOverviewTable";
 import Icon from "./UI/Icon";
 
-
-export type MarketCoins = {
-  data: Array<CoinData>
+interface Props {
+  bar?: string,
+  setToggledMenu: (value: boolean) => void
 }
 
-function Sidebar(props: any) {
+function Sidebar({bar, setToggledMenu}: Props) {
 
-  const [toggledIcon, setToggledIcon] = useState(props.bar)
+  const [toggledIcon, setToggledIcon] = useState(bar)
 
   const [overviewHover, setOverviewHover] = useState(false)
   const [alertsHover, setAlertsHover] = useState(false)
   const [newsHover, setNewsHover] = useState(false)
 
-  const {data, isLoading, error} = useQuery(
-      {
-        queryKey: ['coinList'],
-        queryFn:
-            async (): Promise<MarketCoins> => {
-              return await axios.get(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en`)
-            }
-      }
-  );
 
-  let bar: any
+  let currentBar: any
 
   if (toggledIcon === 'news') {
-    bar = <SidebarNews/>
+    currentBar = <SidebarNews/>
   } else if (toggledIcon === 'alerts') {
-    bar = <SidebarAlerts/>
+    currentBar = <SidebarAlerts/>
   } else if (toggledIcon === 'overview') {
-    bar = <SidebarOverview data={data}
-                           isLoading={isLoading}
-                           error={error}/>
+    currentBar = <SidebarOverview/>
   }
 
   const handleToggledIcon = (thisToggledIcon: string) => {
     if (toggledIcon === thisToggledIcon) {
       setToggledIcon('')
-      props.setToggledMenu(false)
-      bar = ''
+      setToggledMenu(false)
+      currentBar = ''
       return
     }
     setToggledIcon(thisToggledIcon)
@@ -55,7 +41,7 @@ function Sidebar(props: any) {
   return (
       <div
           className={'   md:w-auto md:flex text-my-white z-50  relative'}>
-        {bar}
+        {currentBar}
         <div className={" h-full md:sticky absolute top-0 right-0   max-w-sm bg-sidebar-black border-l border-my-gray"}>
           <div className={'w-12 '}>
 

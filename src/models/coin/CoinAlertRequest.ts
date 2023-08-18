@@ -3,5 +3,5 @@ export default interface CoinAlertRequest {
   startPrice: number,
   desiredPrice: number,
   sendOnEmail: boolean,
-  image:string
+  image: string
 }

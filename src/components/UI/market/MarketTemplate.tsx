@@ -1,17 +1,22 @@
-import React from 'react';
+import React, {PropsWithChildren} from 'react';
 import SearchBar from "../common/SearchBar";
 
-function MarketTemplate(props: any) {
+interface Props {
+  query: string
+  setQuery: (value: string) => void
+}
+
+function MarketTemplate({query, setQuery, children}: PropsWithChildren<Props>) {
   return (
       <div id={"market"} className={''}>
         <h1 className={"text-5xl font-bold py-5"}>Market</h1>
 
         <SearchBar
-            query={props.query}
-            setQuery={props.setQuery}
+            query={query}
+            setQuery={setQuery}
         ></SearchBar>
 
-        {props.children}
+        {children}
       </div>
   );
 }

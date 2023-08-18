@@ -1,7 +1,6 @@
 import {useEffect} from "react";
-import {useLocation} from "react-router-dom";
 
- const useParamsForNavigation = (location: any) =>{
+const useParamsForNavigation = (location: any) => {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const scrollTo = queryParams.get('scrollTo');
@@ -9,7 +8,7 @@ import {useLocation} from "react-router-dom";
     if (scrollTo) {
       const element = document.getElementById(scrollTo);
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+        element.scrollIntoView({behavior: 'smooth'});
       }
     } else {
       window.scrollTo(0, 0);

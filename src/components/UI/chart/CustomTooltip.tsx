@@ -1,11 +1,17 @@
 import React from 'react';
 import {format, parseISO} from "date-fns";
 
-function CustomTooltip(props: any) {
+interface Props {
+  active?: boolean,
+  label?: string,
+  payload?: { value: number }[]
+}
 
-  if (props.active) {
-    const date = parseISO(props.label)
-    const priceUsd = props.payload[0].value
+function CustomTooltip({active, label, payload}: Props) {
+
+  if (active && label && payload) {
+    const date: Date = parseISO(label)
+    const priceUsd: number = payload[0].value
     return (
         <div
             className={'rounded bg-my-black text-my-white p-4 bg-gradient-to-tr from-indigo-800 via-purple-800 to-pink-500   shadow-lg shadow-my-black text-center'}>
