@@ -1,53 +1,73 @@
-# Getting Started with Create React App
+# This is a front-end for Crypto Alerts website
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+You can check back-end part of this website
+<a href="https://github.com/CherneeNochi256/crypto-alerts-backend">HERE</a>.
 
-## Available Scripts
+<p align="center">
+    <img width="200" src="./public/crypto-alerts-logo.png" alt="">
+</p>
 
-In the project directory, you can run:
+<h2>About the project</h2>
+  <p>Crypto Alerts is a website the main goal of which is to help in tracking crypto concurrences.
+You can write the price of the coin in which you are interested.
+And when this price is reached you will be notified on the website and on your email (only if you confirmed your email).
+</p>
 
-### `npm start`
+<h2>Why does this project worth your attention?</h2>
+  <p>
+Because the functionality presented on this website is free, when for example on Trending View(biggest crypto tracking platform) it's paid only.
+It also has cool design and simple navigation.
+</p>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+<h2>Get Started</h2>
+  <p>
+To get started you can follow Get Started guide on the website.
+</p>
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+👉 Live Demo: <a href='https://crypto-alerts-app.vercel.app/?scrollTo=home'>Live Demo</a>
 
-### `npm test`
+<h3>Build with:</h3>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more
-information.
+<h4> Front-end: </h4>
 
-### `npm run build`
+» Tailwind
+<br>
+» React
+<br>
+» React Query
+<br>
+» Redux
+<br>
+» Typescript
+<br>
+» Recharts.js
+<br>
+» Axios
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<h4> Back-end: </h4>
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+» Spring Boot(JPA, MVC, SECURITY)
+<br>
+» Gradle
+<br>
+» Docker
+<br>
+» Java
+<br>
+» PostgreSQL
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+<h2>Screenshots of the Project 📸</h2>
+<br>
+<h3 align='center'>Home Page 🏡</h3>
 
-### `npm run eject`
+<div align='center'>
+<img src='./public/crypto-alerts-homepage.jpg' alt=""/>
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+</div>
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will
-remove the single build dependency from your project.
+<h3 align='center'>Coin Page ₿</h3>
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right
-into your project so you have full control over them. All of the commands except `eject` will still work, but they will
-point to the copied scripts so you can tweak them. At this point you’re on your own.
+<div align='center'>
+<img src='./public/crypto-alerts-coinpage.jpg' alt=""/>
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you
-shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t
-customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in
-the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+</div>
