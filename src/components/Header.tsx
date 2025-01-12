@@ -8,6 +8,7 @@ import {useQuery} from "react-query";
 import {coinGeckoApi} from "../api/axios";
 import Loading from "./UI/common/Loading";
 import Error from "./UI/common/Error";
+import useWindowSize from "../hooks/useWindowSize";
 import HeaderTemplate from "./UI/HeaderTemplate";
 import FollowButton from "./UI/common/FollowButton";
 import CoinGeckoMarketsCoin from "../models/coin/coinGecko/CoinGeckoMarketsCoin";
