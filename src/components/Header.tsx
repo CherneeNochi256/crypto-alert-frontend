@@ -24,23 +24,22 @@ function Header() {
         }
   })
 
-  if (isLoading) {
-    return (
-        <HeaderTemplate>
-          <div className={"flex justify-around mt-24"}>
-            {
-              width < 768?
-              <></> :
-              <Loading/>
-              <Loading/>
-              <Loading/>
-              <Loading/> 
-            }
-          </div>
-        </HeaderTemplate>
-
-    )
-  } else if (error) {
+  if (isLoading) {  
+  return (  
+    <HeaderTemplate>  
+      <div className={"flex justify-around mt-24"}>  
+        {width < 768 ? null : (  
+          <>  
+            <Loading/>  
+            <Loading/>  
+            <Loading/>  
+            <Loading/>   
+          </>  
+        )}  
+      </div>  
+    </HeaderTemplate>  
+  );  
+} else if (error) {
     return (
         <>
           <HeaderTemplate>
