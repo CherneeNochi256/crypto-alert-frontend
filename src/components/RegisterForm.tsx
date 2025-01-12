@@ -122,7 +122,6 @@ const RegisterForm = ({toggleForm}: Props) => {
 
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-700">
       <section
           className={' fixed top-[20%] right-[37%] z-20  rounded-lg shadow bg-gray-700  w-full max-w-md  px-6 py-6 lg:px-8 max-h-[600px] overflow-y-scroll scrollbar-hide'}>
         <button type="button"
@@ -248,7 +247,6 @@ const RegisterForm = ({toggleForm}: Props) => {
           </div>
         </div>
       </section>
-</div>
   )
 
 }
