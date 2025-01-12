@@ -29,7 +29,7 @@ function Header() {
     <HeaderTemplate>  
       <div className={"flex justify-around mt-24"}>  
         {width < 768 ? null : (  
-          <>  
+          <>   
             <Loading/>  
             <Loading/>  
             <Loading/>  
