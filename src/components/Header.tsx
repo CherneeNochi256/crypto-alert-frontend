@@ -14,6 +14,8 @@ import CoinGeckoMarketsCoin from "../models/coin/coinGecko/CoinGeckoMarketsCoin"
 
 function Header() {
 
+  const width = useWindowSize();
+
   const {data, isLoading, error} = useQuery({
     queryKey: ['headerCoins'],
     queryFn:
@@ -26,10 +28,14 @@ function Header() {
     return (
         <HeaderTemplate>
           <div className={"flex justify-around mt-24"}>
-            <Loading/>
-            <Loading/>
-            <Loading/>
-            <Loading/>
+            {
+              width < 768?
+              <></> :
+              <Loading/>
+              <Loading/>
+              <Loading/>
+              <Loading/> 
+            }
           </div>
         </HeaderTemplate>
 
