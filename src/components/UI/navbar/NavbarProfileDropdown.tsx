@@ -12,7 +12,7 @@ function NavbarProfileDropdown() {
   const {user} = useAppSelector(selectAuth);
   const logout = useLogout();
   const [isRegistrationForm, setIsRegistrationForm] = useState(false);
-  const [isLoginForm, setIsLoginForm] = useState(true)
+  const [isLoginForm, setIsLoginForm] = useState(false)
 
   function toggleForm(action: string) {
     if (action === 'signIn') {
