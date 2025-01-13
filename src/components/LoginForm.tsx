@@ -101,7 +101,7 @@ const LoginForm = ({toggleForm}: Props) => {
   return (
 
       <section
-          className={'fixed top-[20%] right-[37%] z-20  rounded-lg shadow bg-gray-700  w-full max-w-md max-h-full px-6 py-6 lg:px-8'}>
+          className={'top-0 right-0 fixed sm:top-[12%] sm:right-[37%] z-20  rounded-lg shadow bg-gray-700  w-full max-w-md max-h-full px-6 py-6 lg:px-8'}>
         <button type="button"
                 onClick={() => toggleForm('closeModal')}
                 className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
