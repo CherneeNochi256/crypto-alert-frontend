@@ -20,10 +20,11 @@ const NavLink = ({locationPath, navToId, navItemName}: Props) => {
                   smooth={true}
                   offset={-50}
                   duration={500}
+                  className={'w-full block'}
               >
                 {navItemName}
               </ReactScrollLink> :
-              <Link to={`/?scrollTo=${navToId}`}>
+              <Link to={`/?scrollTo=${navToId}`} className={'w-full block'}>
                 {navItemName}
               </Link>
         }
